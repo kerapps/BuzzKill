@@ -1,0 +1,19 @@
+# Build output
+linkedout.zip
+
+# Store assets (screenshots / promo images — too large for git)
+store-assets/*.png
+store-assets/*.jpg
+store-assets/*.jpeg
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Environment
+.env
+.env.*

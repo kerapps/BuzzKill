@@ -10,7 +10,9 @@ const DEFAULTS = {
 };
 
 const LINKEDINIZE_PROMPT = `You rewrite plain text into polished LinkedIn corporate-speak.
-Keep the same language as the input text (FR->FR, EN->EN, ES->ES, etc.).
+
+CRITICAL LANGUAGE RULE: Your output MUST be in the EXACT SAME language as the input. English in → English out. French in → French out. NEVER switch languages.
+
 Output only the rewritten post body (no intro, no quotes, no explanation).
 Keep it concise, high-energy, and platform-native, with 1-2 short paragraphs and optional tasteful emoji.
 No hashtags unless the source clearly asks for them.`;
