@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=320">
+  <title>LinkedOut Settings</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <div class="popup-logo">LO</div>
+      <div>
+        <h1 class="popup-title">LinkedOut</h1>
+        <p class="popup-subtitle">LinkedIn BS Translator</p>
+      </div>
+    </header>
+
+    <div class="popup-section">
+      <label class="toggle-row">
+        <span class="toggle-label">Auto-translate feed</span>
+        <div class="toggle-switch">
+          <input type="checkbox" id="autoTranslate">
+          <span class="toggle-slider"></span>
+        </div>
+      </label>
+    </div>
+
+    <div class="popup-section">
+      <label class="toggle-row">
+        <span class="toggle-label">Hide original content</span>
+        <div class="toggle-switch">
+          <input type="checkbox" id="hideOriginal">
+          <span class="toggle-slider"></span>
+        </div>
+      </label>
+      <p class="field-hint">Only show the translated version, hide LinkedIn's original text</p>
+    </div>
+
+    <div class="popup-section">
+      <label class="toggle-row">
+        <span class="toggle-label">Remove promoted posts</span>
+        <div class="toggle-switch">
+          <input type="checkbox" id="removePromoted">
+          <span class="toggle-slider"></span>
+        </div>
+      </label>
+      <p class="field-hint">Hide ads/promoted posts from the feed</p>
+    </div>
+
+    <div class="popup-section">
+      <label class="field-label" for="provider">LLM Provider</label>
+      <select id="provider" class="field-select">
+        <option value="openai">OpenAI (gpt-4o-mini)</option>
+        <option value="anthropic">Anthropic (claude-3.5-haiku)</option>
+      </select>
+    </div>
+
+    <div class="popup-section">
+      <label class="field-label" for="apiKey">API Key</label>
+      <div class="key-input-row">
+        <input type="password" id="apiKey" class="field-input" placeholder="sk-... or sk-ant-...">
+        <button id="toggleKeyVisibility" class="key-toggle" title="Show/hide key">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 3C4.5 3 1.7 5.1.5 8c1.2 2.9 4 5 7.5 5s6.3-2.1 7.5-5c-1.2-2.9-4-5-7.5-5zm0 8.3A3.3 3.3 0 1 1 8 4.7a3.3 3.3 0 0 1 0 6.6zm0-5.3a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="popup-section">
+      <label class="field-label" for="tone">Translation Tone</label>
+      <select id="tone" class="field-select">
+        <option value="blunt">Blunt — brutally honest</option>
+        <option value="sarcastic">Sarcastic — dry wit</option>
+        <option value="neutral">Neutral — plain English</option>
+      </select>
+    </div>
+
+    <div class="popup-section popup-stats">
+      <div class="stat">
+        <span class="stat-value" id="statTranslated">0</span>
+        <span class="stat-label">posts translated</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="statTokens">0</span>
+        <span class="stat-label">tokens used</span>
+      </div>
+    </div>
+
+    <div class="popup-footer">
+      <button id="saveBtn" class="save-btn">Save Settings</button>
+      <span id="saveStatus" class="save-status"></span>
+    </div>
+
+    <div class="popup-links">
+      <a id="sourceLink" href="https://github.com/YOUR_GITHUB_USERNAME/linkedout" target="_blank" rel="noopener noreferrer">Source</a>
+      <a id="privacyLink" href="https://github.com/YOUR_GITHUB_USERNAME/linkedout/blob/main/PRIVACY_POLICY.md" target="_blank" rel="noopener noreferrer">Privacy</a>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
