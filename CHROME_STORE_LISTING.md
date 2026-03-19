@@ -4,7 +4,7 @@ Replace placeholders before publishing.
 
 ## Extension Name
 
-LinkedOut — LinkedIn BS Translator
+LinkedOut — LinkedIn Corporate Speak Translator
 
 ## Short Description (132 chars max)
 
@@ -42,12 +42,12 @@ Productivity
 
 ## Support URL
 
-https://github.com/YOUR_GITHUB_USERNAME/linkedout/issues
+https://github.com/kerapps/LinkedOut/issues
 
 ## Homepage URL
 
-https://github.com/YOUR_GITHUB_USERNAME/linkedout
+https://github.com/kerapps/LinkedOut
 
 ## Privacy Policy URL
 
-https://github.com/YOUR_GITHUB_USERNAME/linkedout/blob/main/PRIVACY_POLICY.md
+https://github.com/kerapps/LinkedOut/blob/main/PRIVACY_POLICY.md

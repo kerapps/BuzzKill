@@ -2,7 +2,7 @@
 
 ## 1) Preflight
 
-- [ ] Replace all `YOUR_GITHUB_USERNAME` placeholders
+- [ ] Verify repository links point to `https://github.com/kerapps/LinkedOut`
 - [ ] Verify icons are final (16/48/128)
 - [ ] Verify extension version in `manifest.json` is bumped
 - [ ] Remove debug logs or guard behind debug flag

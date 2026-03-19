@@ -1,8 +1,8 @@
 (() => {
   const DEBUG = false;
-  const SOURCE_URL = "https://github.com/YOUR_GITHUB_USERNAME/linkedout";
+  const SOURCE_URL = "https://github.com/kerapps/LinkedOut";
   const PRIVACY_URL =
-    "https://github.com/YOUR_GITHUB_USERNAME/linkedout/blob/main/PRIVACY_POLICY.md";
+    "https://github.com/kerapps/LinkedOut/blob/main/PRIVACY_POLICY.md";
   const PROCESSED_ATTR = "data-linkedout";
   const RESCAN_INTERVAL_MS = 2500;
   const LOG = (...args) => {
@@ -10,7 +10,7 @@
   };
   const MIN_TEXT_LEN = 80;
   const MAX_TEXT_LEN = 5000;
-  const MIN_FEED_CARD_WIDTH = 420;
+  const MIN_FEED_CARD_WIDTH = 300;
 
   let autoTranslate = false;
   let hideOriginal = false;
@@ -33,21 +33,26 @@
   }
 
   function findCardContainer(startEl) {
-    const urnContainer = startEl.closest("[data-urn]");
-    if (urnContainer) return urnContainer;
-
     const main = getMainFeed();
     let node = startEl;
-    for (let i = 0; i < 12 && node && node !== main; i++) {
+    let bestUrn = null;
+    let bestSize = null;
+
+    for (let i = 0; i < 14 && node && node !== main; i++) {
+      if (!(node instanceof HTMLElement)) { node = node.parentElement; continue; }
+
+      const hasUrn = node.hasAttribute("data-urn");
       const rect = node.getBoundingClientRect();
-      const widthOk = rect.width >= 420 && rect.width <= 980;
-      const heightOk = rect.height >= 120 && rect.height <= 2600;
-      if (widthOk && heightOk) {
-        return node;
-      }
+      const sizeOk =
+        rect.width >= 300 && rect.width <= 980 &&
+        rect.height >= 120 && rect.height <= 2600;
+
+      if (hasUrn && sizeOk && !bestUrn) bestUrn = node;
+      if (sizeOk && !bestSize) bestSize = node;
       node = node.parentElement;
     }
-    return startEl.parentElement || startEl;
+
+    return bestUrn || bestSize || startEl.closest("[data-urn]") || startEl.parentElement || startEl;
   }
 
   function extractPostId(container) {
@@ -123,16 +128,16 @@
     if (el.closest("[contenteditable='true']")) return true;
     if (el.closest("form")) return true;
 
-    // Typical comment/reply language.
-    if (
-      /\b(comment|comments|reply|replies|respond|response|see all comments)\b/.test(
-        lower
-      )
-    ) {
-      return true;
+    if (text.length < 200) {
+      if (
+        /\b(see all comments|add a comment|reply|replies|respond|response)\b/.test(
+          lower
+        )
+      ) {
+        return true;
+      }
     }
 
-    // Avoid short profile/title style snippets even if repeated.
     if (text.length < 140 && el.querySelectorAll("a").length >= 2) {
       return true;
     }
@@ -157,13 +162,26 @@
       const raw = el.innerText || "";
       const text = normalizeText(raw);
       if (text.length < MIN_TEXT_LEN || text.length > MAX_TEXT_LEN) continue;
-      if (isLikelyCommentOrMetaText(el, text)) continue;
+
+      const preview = text.slice(0, 80);
+
+      if (isLikelyCommentOrMetaText(el, text)) {
+        LOG("REJECT comment/meta:", preview);
+        continue;
+      }
 
       const buttonsNearby = el.querySelectorAll("button").length;
-      if (buttonsNearby > 3) continue;
+      if (buttonsNearby > 3) {
+        LOG("REJECT buttons>3:", buttonsNearby, preview);
+        continue;
+      }
 
       const container = findCardContainer(el);
-      if (!isLikelyFeedColumnCard(container)) continue;
+      if (!isLikelyFeedColumnCard(container)) {
+        const r = container.getBoundingClientRect();
+        LOG("REJECT card size:", Math.round(r.width) + "x" + Math.round(r.height), preview);
+        continue;
+      }
       const containerRect = container.getBoundingClientRect();
       const elRect = el.getBoundingClientRect();
       if (containerRect.height <= 0) continue;
@@ -172,16 +190,22 @@
       const relativeBottom =
         (containerRect.bottom - elRect.bottom) / containerRect.height;
 
-      // Main post text usually sits in the upper-middle zone of a post card.
-      // This drops title/header text (too high) and comments/actions (too low).
-      if (relativeTop < 0.08 || relativeTop > 0.72) continue;
-      if (relativeBottom < 0.06) continue;
+      if (relativeTop < 0.02 || relativeTop > 0.72) {
+        LOG("REJECT relTop:", relativeTop.toFixed(3), preview);
+        continue;
+      }
+      if (relativeBottom < 0.04) {
+        LOG("REJECT relBot:", relativeBottom.toFixed(3), preview);
+        continue;
+      }
 
       const score =
         text.length -
         el.childElementCount * 3 -
         Math.abs(relativeTop - 0.28) * 180;
       const existing = byContainer.get(container);
+
+      LOG("ACCEPT score:", score.toFixed(1), "relTop:", relativeTop.toFixed(3), preview);
 
       if (!existing || score > existing.score) {
         byContainer.set(container, { container, textEl: el, text, score });
@@ -226,7 +250,7 @@
     const spinner = document.createElement("div");
     spinner.className = "linkedout-loading";
     spinner.innerHTML =
-      '<div class="linkedout-spinner"></div><span>Translating BS...</span>';
+      '<div class="linkedout-spinner"></div><span>Translating...</span>';
     container.appendChild(spinner);
     return spinner;
   }
@@ -250,6 +274,8 @@
     const promoted = hud.querySelector("#loHudPromoted");
     const key = hud.querySelector("#loHudApiKey");
     const tokens = hud.querySelector("#loHudTokens");
+    const model = hud.querySelector("#loHudModel");
+    const cost = hud.querySelector("#loHudCost");
 
     if (provider) provider.value = settings.provider;
     if (tone) tone.value = settings.tone;
@@ -258,7 +284,27 @@
     if (promoted) promoted.checked = settings.removePromoted !== false;
     if (key) key.value = settings.apiKey || "";
     if (tokens) tokens.textContent = String(stats.total_tokens || 0);
+    if (model)
+      model.textContent =
+        settings.provider === "anthropic"
+          ? "claude-3-5-haiku-latest"
+          : "gpt-4o-mini";
+    if (cost) {
+      const rates =
+        settings.provider === "anthropic"
+          ? { input: 1.0, output: 5.0 }
+          : { input: 0.15, output: 0.6 };
+      const exact = Number(stats.estimated_cost_usd || 0);
+      if (exact > 0) {
+        cost.textContent = `$${exact.toFixed(4)}`;
+      } else {
+        const total = Number(stats.total_tokens || 0);
+        const approx = (total / 2) * (rates.input + rates.output) / 1_000_000;
+        cost.textContent = `~$${approx.toFixed(4)}`;
+      }
+    }
   }
+
 
   function mountHud() {
     if (hudMounted || document.querySelector(".linkedout-hud")) return;
@@ -273,6 +319,13 @@
           <strong>LinkedOut</strong>
           <span class="linkedout-hud-sub">enabled</span>
         </div>
+
+        <div class="linkedout-hud-tabs" role="tablist" aria-label="LinkedOut panel tabs">
+          <button id="loTabSettings" class="linkedout-hud-tab is-active" role="tab" aria-selected="true">Settings</button>
+          <button id="loTabCompose" class="linkedout-hud-tab" role="tab" aria-selected="false">Create post</button>
+        </div>
+
+        <div id="loPanelSettings" class="linkedout-hud-tab-panel is-active" role="tabpanel">
 
         <div class="linkedout-hud-group">
           <label>Provider</label>
@@ -296,22 +349,39 @@
           <input id="loHudApiKey" type="password" placeholder="sk-..." />
         </div>
 
-        <label class="linkedout-hud-check">
-          <input id="loHudAuto" type="checkbox" />
-          <span>Auto-translate feed</span>
+        <label class="linkedout-hud-toggle-row">
+          <span class="linkedout-hud-toggle-label">Auto-translate feed</span>
+          <div class="linkedout-hud-switch">
+            <input id="loHudAuto" type="checkbox" />
+            <span class="linkedout-hud-slider"></span>
+          </div>
         </label>
-        <label class="linkedout-hud-check">
-          <input id="loHudHide" type="checkbox" />
-          <span>Hide original content</span>
+        <label class="linkedout-hud-toggle-row">
+          <span class="linkedout-hud-toggle-label">Hide original content</span>
+          <div class="linkedout-hud-switch">
+            <input id="loHudHide" type="checkbox" />
+            <span class="linkedout-hud-slider"></span>
+          </div>
         </label>
-        <label class="linkedout-hud-check">
-          <input id="loHudPromoted" type="checkbox" />
-          <span>Remove promoted posts</span>
+        <label class="linkedout-hud-toggle-row">
+          <span class="linkedout-hud-toggle-label">Remove promoted posts</span>
+          <div class="linkedout-hud-switch">
+            <input id="loHudPromoted" type="checkbox" />
+            <span class="linkedout-hud-slider"></span>
+          </div>
         </label>
 
         <div class="linkedout-hud-stats">
           <span>Tokens used:</span>
           <strong id="loHudTokens">0</strong>
+        </div>
+        <div class="linkedout-hud-stats">
+          <span>Model used:</span>
+          <strong id="loHudModel">gpt-4o-mini</strong>
+        </div>
+        <div class="linkedout-hud-stats">
+          <span>Estimated cost:</span>
+          <strong id="loHudCost">$0.0000</strong>
         </div>
 
         <button class="linkedout-hud-save" id="loHudSave">Save settings</button>
@@ -320,9 +390,9 @@
           <a id="loHudSource" href="${SOURCE_URL}" target="_blank" rel="noopener noreferrer">Source</a>
           <a id="loHudPrivacy" href="${PRIVACY_URL}" target="_blank" rel="noopener noreferrer">Privacy</a>
         </div>
+        </div>
 
-        <hr />
-
+        <div id="loPanelCompose" class="linkedout-hud-tab-panel" role="tabpanel">
         <div class="linkedout-hud-group">
           <label>Create a post (Corpo mode)</label>
           <textarea id="loHudComposeInput" placeholder="Write your plain message..."></textarea>
@@ -332,6 +402,7 @@
           <textarea id="loHudComposeOutput" readonly placeholder="Corporate version appears here..."></textarea>
         </div>
         <button class="linkedout-hud-copy" id="loHudCopy">Copy output</button>
+        </div>
       </div>
     `;
 
@@ -345,30 +416,69 @@
     const copyBtn = hud.querySelector("#loHudCopy");
     const outputEl = hud.querySelector("#loHudComposeOutput");
     const inputEl = hud.querySelector("#loHudComposeInput");
+    const tabSettings = hud.querySelector("#loTabSettings");
+    const tabCompose = hud.querySelector("#loTabCompose");
+    const panelSettings = hud.querySelector("#loPanelSettings");
+    const panelCompose = hud.querySelector("#loPanelCompose");
+    let hudSaveTimer = null;
+
+    const setActiveTab = (tab) => {
+      const isSettings = tab === "settings";
+      tabSettings.classList.toggle("is-active", isSettings);
+      tabCompose.classList.toggle("is-active", !isSettings);
+      tabSettings.setAttribute("aria-selected", isSettings ? "true" : "false");
+      tabCompose.setAttribute("aria-selected", isSettings ? "false" : "true");
+      panelSettings.classList.toggle("is-active", isSettings);
+      panelCompose.classList.toggle("is-active", !isSettings);
+    };
+
+    const getHudSettings = () => ({
+      provider: hud.querySelector("#loHudProvider").value,
+      apiKey: hud.querySelector("#loHudApiKey").value.trim(),
+      tone: hud.querySelector("#loHudTone").value,
+      autoTranslate: hud.querySelector("#loHudAuto").checked,
+      hideOriginal: hud.querySelector("#loHudHide").checked,
+      removePromoted: hud.querySelector("#loHudPromoted").checked,
+    });
+
+    const saveHudSettings = async (message = "Saved") => {
+      await chrome.storage.sync.set({ linkedout_settings: getHudSettings() });
+      saveStatus.textContent = message;
+      setTimeout(() => {
+        if (saveStatus.textContent === message) saveStatus.textContent = "";
+      }, 1200);
+    };
+
+    const scheduleHudAutoSave = (delayMs = 0) => {
+      if (hudSaveTimer) clearTimeout(hudSaveTimer);
+      hudSaveTimer = setTimeout(() => {
+        saveHudSettings();
+      }, delayMs);
+    };
 
     fab.addEventListener("click", async () => {
       const open = panel.classList.toggle("is-open");
       panel.setAttribute("aria-hidden", open ? "false" : "true");
       if (open) {
+        setActiveTab("settings");
         await refreshHudValues();
       }
     });
 
-    saveBtn.addEventListener("click", async () => {
-      const nextSettings = {
-        provider: hud.querySelector("#loHudProvider").value,
-        apiKey: hud.querySelector("#loHudApiKey").value.trim(),
-        tone: hud.querySelector("#loHudTone").value,
-        autoTranslate: hud.querySelector("#loHudAuto").checked,
-        hideOriginal: hud.querySelector("#loHudHide").checked,
-        removePromoted: hud.querySelector("#loHudPromoted").checked,
-      };
+    tabSettings.addEventListener("click", () => setActiveTab("settings"));
+    tabCompose.addEventListener("click", () => setActiveTab("compose"));
 
-      await chrome.storage.sync.set({ linkedout_settings: nextSettings });
-      saveStatus.textContent = "Saved";
-      setTimeout(() => {
-        saveStatus.textContent = "";
-      }, 1500);
+    saveBtn.addEventListener("click", () => saveHudSettings("Saved"));
+
+    ["loHudProvider", "loHudTone", "loHudAuto", "loHudHide", "loHudPromoted"].forEach(
+      (id) => {
+        hud.querySelector(`#${id}`).addEventListener("change", () => {
+          scheduleHudAutoSave(0);
+        });
+      }
+    );
+    hud.querySelector("#loHudApiKey").addEventListener("input", () => {
+      scheduleHudAutoSave(500);
     });
 
     createBtn.addEventListener("click", async () => {
@@ -405,6 +515,7 @@
         }, 1200);
       }
     });
+
   }
 
   // --- Core logic ---
@@ -431,21 +542,23 @@
 
       if (hideOriginal) {
         textEl.style.display = "none";
-      }
 
-      let showingOriginal = false;
-      toggle.addEventListener("click", () => {
-        showingOriginal = !showingOriginal;
-        if (showingOriginal) {
-          textEl.style.display = "";
-          card.querySelector(".linkedout-card-body").style.display = "none";
-          toggle.textContent = "Show translation";
-        } else {
-          textEl.style.display = hideOriginal ? "none" : "";
-          card.querySelector(".linkedout-card-body").style.display = "";
-          toggle.textContent = "Show original";
-        }
-      });
+        let showingOriginal = false;
+        toggle.addEventListener("click", () => {
+          showingOriginal = !showingOriginal;
+          if (showingOriginal) {
+            textEl.style.display = "";
+            card.querySelector(".linkedout-card-body").style.display = "none";
+            toggle.textContent = "Show translation";
+          } else {
+            textEl.style.display = "none";
+            card.querySelector(".linkedout-card-body").style.display = "";
+            toggle.textContent = "Show original";
+          }
+        });
+      } else {
+        toggle.style.display = "none";
+      }
     } catch (err) {
       loading.remove();
       const errorEl = document.createElement("div");
@@ -547,22 +660,6 @@
     feed.prepend(banner);
   }
 
-  function applyHideOriginalToAll(shouldHide) {
-    const cards = getMainFeed()?.querySelectorAll(`[${PROCESSED_ATTR}]`) || [];
-    cards.forEach((postEl) => {
-      if (!postEl.querySelector(".linkedout-card")) return;
-      const wrapper = postEl.querySelector(".linkedout-wrapper");
-      if (!wrapper) return;
-      const previous = wrapper.previousElementSibling;
-      if (previous instanceof HTMLElement) {
-        previous.style.display = shouldHide ? "none" : "";
-      }
-    });
-  }
-
-  function removeBanner() {
-    document.querySelectorAll(".linkedout-banner").forEach((el) => el.remove());
-  }
 
   // --- Init ---
 
@@ -607,44 +704,8 @@
 
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area === "sync" && changes.linkedout_settings) {
-        const newSettings = changes.linkedout_settings.newValue;
-        const wasAuto = autoTranslate;
-        const wasHiding = hideOriginal;
-        const wasRemovePromoted = removePromoted;
-        autoTranslate = newSettings.autoTranslate;
-        hideOriginal = newSettings.hideOriginal;
-        removePromoted = newSettings.removePromoted !== false;
-
-        if (hideOriginal !== wasHiding) {
-          applyHideOriginalToAll(hideOriginal);
-        }
-
-        if (autoTranslate && !wasAuto) {
-          injectBanner();
-          document.querySelectorAll(`[${PROCESSED_ATTR}]`).forEach((el) => {
-            el.removeAttribute(PROCESSED_ATTR);
-          });
-          document
-            .querySelectorAll(
-              ".linkedout-wrapper, .linkedout-card, .linkedout-btn"
-            )
-            .forEach((el) => el.remove());
-          scanPosts();
-        } else if (!autoTranslate && wasAuto) {
-          removeBanner();
-        }
-
-        if (wasRemovePromoted && !removePromoted) {
-          document
-            .querySelectorAll("[data-linkedout-promoted-removed='1']")
-            .forEach((el) => {
-              el.style.display = "";
-              el.removeAttribute("data-linkedout-promoted-removed");
-            });
-        } else if (!wasRemovePromoted && removePromoted) {
-          scanPosts();
-        }
-        refreshHudValues();
+        window.location.reload();
+        return;
       }
 
       if (area === "local" && changes.linkedout_stats) {

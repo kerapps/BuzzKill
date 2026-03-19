@@ -1,31 +1,39 @@
 const LinkedOutTranslator = (() => {
+  const PRICING_PER_MILLION = {
+    openai: { input: 0.15, output: 0.6 }, // gpt-4o-mini
+    anthropic: { input: 1.0, output: 5.0 }, // claude haiku tier
+  };
+
   const TONE_PROMPTS = {
-    blunt: `You are LinkedOut, a corporate BS translator. Your job is to take LinkedIn posts and reveal what the person ACTUALLY means in brutally honest, no-sugar-coating language.
+    blunt: `You are LinkedOut, a corporate speak translator. Your job is to take LinkedIn posts and reveal what the person ACTUALLY means in brutally honest, no-sugar-coating language.
 
 Rules:
 - Strip all corporate jargon, humble-brags, and hype-driven messaging
 - Be direct and blunt — say what they really mean
 - If the post contains genuine useful information, preserve it plainly
+- Keep the same language as the input text (FR->FR, EN->EN, ES->ES, etc.)
 - Keep translations shorter than the original
 - Never add hashtags or emojis
 - Return ONLY the translated text, no preamble or explanation`,
 
-    sarcastic: `You are LinkedOut, a corporate BS translator. Your job is to take LinkedIn posts and reveal what the person ACTUALLY means, with dry wit and sarcasm.
+    sarcastic: `You are LinkedOut, a corporate speak translator. Your job is to take LinkedIn posts and reveal what the person ACTUALLY means, with dry wit and sarcasm.
 
 Rules:
 - Decode the corporate jargon with sharp, witty commentary
 - Add dry humor — expose the absurdity without being mean-spirited
 - If the post contains genuine useful information, preserve it with a lighter touch
+- Keep the same language as the input text (FR->FR, EN->EN, ES->ES, etc.)
 - Keep translations shorter than the original
 - Never add hashtags or emojis
 - Return ONLY the translated text, no preamble or explanation`,
 
-    neutral: `You are LinkedOut, a corporate BS translator. Your job is to take LinkedIn posts and rewrite them in plain, clear English without corporate jargon.
+    neutral: `You are LinkedOut, a corporate speak translator. Your job is to take LinkedIn posts and rewrite them in plain, clear language without corporate jargon.
 
 Rules:
 - Replace all corporate speak with straightforward language
 - Maintain a neutral, matter-of-fact tone
 - If the post contains genuine useful information, preserve it clearly
+- Keep the same language as the input text (FR->FR, EN->EN, ES->ES, etc.)
 - Keep translations shorter than the original
 - Never add hashtags or emojis
 - Return ONLY the translated text, no preamble or explanation`,
@@ -105,6 +113,7 @@ Transform plain, honest text into polished LinkedIn-style corporate speak.
 Rules:
 - Keep the core meaning of the original text
 - Sound upbeat, professional, and slightly self-promotional
+- Keep the same language as the input text (FR->FR, EN->EN, ES->ES, etc.)
 - Use concise, readable language
 - You may add 1-2 tasteful hashtags at the end
 - Do NOT invent facts
@@ -145,10 +154,20 @@ Rules:
           resolve({
             text: response.translation,
             usageTokens: response.usageTokens || 0,
+            inputTokens: response.inputTokens || 0,
+            outputTokens: response.outputTokens || 0,
           });
         }
       );
     });
+  }
+
+  function calculateCostUSD(provider, inputTokens, outputTokens) {
+    const rates = PRICING_PER_MILLION[provider] || PRICING_PER_MILLION.openai;
+    return (
+      (inputTokens * rates.input) / 1_000_000 +
+      (outputTokens * rates.output) / 1_000_000
+    );
   }
 
   async function translate(postText, options = {}) {
@@ -198,7 +217,17 @@ Rules:
       persistPostCache();
     }
 
-    updateStats({ translatedInc: 1, tokensInc: result.usageTokens });
+    updateStats({
+      translatedInc: 1,
+      tokensInc: result.usageTokens,
+      inputTokensInc: result.inputTokens,
+      outputTokensInc: result.outputTokens,
+      costIncUSD: calculateCostUSD(
+        settings.provider,
+        result.inputTokens,
+        result.outputTokens
+      ),
+    });
     return result.text;
   }
 
@@ -224,19 +253,40 @@ Rules:
 
     cache.set(cacheKey, result.text);
     persistCache();
-    updateStats({ tokensInc: result.usageTokens });
+    updateStats({
+      tokensInc: result.usageTokens,
+      inputTokensInc: result.inputTokens,
+      outputTokensInc: result.outputTokens,
+      costIncUSD: calculateCostUSD(
+        settings.provider,
+        result.inputTokens,
+        result.outputTokens
+      ),
+    });
     return result.text;
   }
 
-  async function updateStats({ translatedInc = 0, tokensInc = 0 } = {}) {
+  async function updateStats({
+    translatedInc = 0,
+    tokensInc = 0,
+    inputTokensInc = 0,
+    outputTokensInc = 0,
+    costIncUSD = 0,
+  } = {}) {
     const result = await chrome.storage.local.get("linkedout_stats");
     const stats = result.linkedout_stats || {
       translated: 0,
       total_tokens: 0,
+      input_tokens: 0,
+      output_tokens: 0,
+      estimated_cost_usd: 0,
       session_start: Date.now(),
     };
     stats.translated += translatedInc;
     stats.total_tokens = (stats.total_tokens || 0) + tokensInc;
+    stats.input_tokens = (stats.input_tokens || 0) + inputTokensInc;
+    stats.output_tokens = (stats.output_tokens || 0) + outputTokensInc;
+    stats.estimated_cost_usd = (stats.estimated_cost_usd || 0) + costIncUSD;
     await chrome.storage.local.set({ linkedout_stats: stats });
   }
 

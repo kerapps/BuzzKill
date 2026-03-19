@@ -70,4 +70,4 @@ This policy may be updated from time to time. The "Last updated" date above indi
 
 For privacy questions, open an issue in the repository:
 
-- `https://github.com/YOUR_GITHUB_USERNAME/linkedout/issues`
+- `https://github.com/kerapps/LinkedOut/issues`

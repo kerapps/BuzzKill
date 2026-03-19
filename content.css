@@ -48,7 +48,7 @@
 .linkedout-label {
   font-size: 11px;
   font-weight: 700;
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: 0.5px;
   color: #e67e22;
 }
@@ -212,29 +212,28 @@ html.theme--dark .linkedout-error,
 .linkedout-hud {
   position: fixed;
   right: 16px;
-  top: 88px;
+  top: 72px;
   z-index: 2147483646;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .linkedout-hud-fab {
-  min-width: 96px;
-  height: 46px;
-  padding: 0 14px;
+  width: 50px;
+  height: 50px;
+  padding: 0;
   border: none;
-  border-radius: 999px;
+  border-radius: 11px;
   background: linear-gradient(135deg, #e67e22, #d35400);
   color: #fff;
   font-weight: 800;
-  font-size: 32px;
+  font-size: 17px;
   letter-spacing: 0.2px;
   cursor: pointer;
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.26);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
-  border: 2px solid rgba(255, 255, 255, 0.35);
+  border: none;
   transition: transform 0.15s ease, box-shadow 0.2s ease;
 }
 
@@ -250,6 +249,7 @@ html.theme--dark .linkedout-error,
 .linkedout-hud-panel {
   position: absolute;
   right: 0;
+  left: auto;
   top: 54px;
   width: 300px;
   max-height: 70vh;
@@ -271,6 +271,38 @@ html.theme--dark .linkedout-error,
   align-items: baseline;
   justify-content: space-between;
   margin-bottom: 8px;
+}
+
+.linkedout-hud-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.linkedout-hud-tab {
+  border: 1px solid #d1d5db;
+  background: #f8fafc;
+  color: #475569;
+  border-radius: 8px;
+  padding: 7px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.linkedout-hud-tab.is-active {
+  background: #e67e22;
+  border-color: #e67e22;
+  color: #fff;
+}
+
+.linkedout-hud-tab-panel {
+  display: none;
+}
+
+.linkedout-hud-tab-panel.is-active {
+  display: block;
 }
 
 .linkedout-hud-sub {
@@ -305,12 +337,60 @@ html.theme--dark .linkedout-error,
   resize: vertical;
 }
 
-.linkedout-hud-check {
+.linkedout-hud-toggle-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin: 6px 0;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.linkedout-hud-toggle-label {
   font-size: 12px;
+  color: #111827;
+}
+
+.linkedout-hud-switch {
+  position: relative;
+  width: 44px;
+  height: 26px;
+  flex: 0 0 auto;
+}
+
+.linkedout-hud-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.linkedout-hud-slider {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: #d1d5db;
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+}
+
+.linkedout-hud-slider::before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 3px;
+  top: 3px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: transform 0.18s ease;
+}
+
+.linkedout-hud-switch input:checked + .linkedout-hud-slider {
+  background: #e67e22;
+}
+
+.linkedout-hud-switch input:checked + .linkedout-hud-slider::before {
+  transform: translateX(18px);
 }
 
 .linkedout-hud-stats {
@@ -334,6 +414,10 @@ html.theme--dark .linkedout-error,
   margin-top: 8px;
 }
 
+.linkedout-hud-create {
+  margin-bottom: 10px;
+}
+
 .linkedout-hud-save,
 .linkedout-hud-create {
   background: #e67e22;
@@ -355,7 +439,7 @@ html.theme--dark .linkedout-error,
 .linkedout-hud-links {
   display: flex;
   gap: 10px;
-  margin-top: 4px;
+  margin-top: 8px;
 }
 
 .linkedout-hud-links a {
@@ -378,9 +462,45 @@ html.theme--dark .linkedout-hud-panel,
   color: #f3f4f6;
 }
 
+body.theme--dark .linkedout-hud-tab,
+html.theme--dark .linkedout-hud-tab,
+.theme--dark .linkedout-hud-tab,
+.artdeco-theme--dark .linkedout-hud-tab {
+  background: #111827;
+  border-color: #374151;
+  color: #cbd5e1;
+}
+
+body.theme--dark .linkedout-hud-toggle-label,
+html.theme--dark .linkedout-hud-toggle-label,
+.theme--dark .linkedout-hud-toggle-label,
+.artdeco-theme--dark .linkedout-hud-toggle-label {
+  color: #e5e7eb;
+}
+
 body.theme--dark .linkedout-hud-fab,
 html.theme--dark .linkedout-hud-fab,
 .theme--dark .linkedout-hud-fab,
 .artdeco-theme--dark .linkedout-hud-fab {
-  border-color: rgba(255, 255, 255, 0.2);
+  border: none;
+}
+
+@media (max-width: 768px) {
+  .linkedout-hud {
+    right: 10px;
+    top: 66px;
+  }
+
+  .linkedout-hud-fab {
+    width: 42px;
+    height: 42px;
+    font-size: 14px;
+    border-radius: 9px;
+  }
+
+  .linkedout-hud-panel {
+    width: min(280px, calc(100vw - 20px));
+    top: 56px;
+    max-height: 65vh;
+  }
 }

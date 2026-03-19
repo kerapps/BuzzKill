@@ -157,6 +157,25 @@ body {
   background: #fff;
 }
 
+.field-textarea {
+  width: 100%;
+  min-height: 84px;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  background: #fafafa;
+  color: #1a1a1a;
+  resize: vertical;
+}
+
+.field-textarea:focus {
+  outline: none;
+  border-color: #e67e22;
+  background: #fff;
+}
+
 .key-input-row {
   display: flex;
   gap: 6px;
@@ -208,6 +227,25 @@ body {
   color: #888;
 }
 
+.model-stat {
+  margin-top: 6px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-model-label {
+  font-size: 11px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.35px;
+}
+
+.stat-model-value {
+  font-size: 12px;
+  color: #334155;
+  font-weight: 700;
+}
+
 /* Footer */
 
 .popup-footer {
@@ -233,6 +271,29 @@ body {
 
 .save-btn:hover {
   background: #cf6d17;
+}
+
+.popup-create .create-btn {
+  margin-top: 8px;
+  width: 100%;
+}
+
+.secondary-btn {
+  margin-top: 8px;
+  width: 100%;
+  padding: 8px 20px;
+  background: #0f172a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.secondary-btn:hover {
+  background: #1f2937;
 }
 
 .save-status {

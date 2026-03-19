@@ -1,4 +1,4 @@
-# LinkedOut — LinkedIn BS Translator
+# LinkedOut — LinkedIn Corporate Speak Translator
 
 LinkedOut is a Chrome extension that translates LinkedIn corporate speak into plain language and can also rewrite plain text into LinkedIn-style corporate tone.
 
@@ -36,10 +36,8 @@ Inspired by [Kagi Translate's LinkedIn Speak](https://translate.kagi.com/?from=e
 
 ## Open Source
 
-- Repository: `https://github.com/YOUR_GITHUB_USERNAME/linkedout`
-- Issues: `https://github.com/YOUR_GITHUB_USERNAME/linkedout/issues`
-
-Replace `YOUR_GITHUB_USERNAME` before publishing.
+- Repository: `https://github.com/kerapps/LinkedOut`
+- Issues: `https://github.com/kerapps/LinkedOut/issues`
 
 ## Chrome Web Store Prep
 

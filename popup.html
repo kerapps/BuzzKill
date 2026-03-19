@@ -12,7 +12,7 @@
       <div class="popup-logo">LO</div>
       <div>
         <h1 class="popup-title">LinkedOut</h1>
-        <p class="popup-subtitle">LinkedIn BS Translator</p>
+        <p class="popup-subtitle">LinkedIn Corporate Speak Translator</p>
       </div>
     </header>
 
@@ -77,6 +77,15 @@
       </select>
     </div>
 
+    <div class="popup-section popup-create">
+      <label class="field-label" for="createInput">Create post (Corpo mode)</label>
+      <textarea id="createInput" class="field-textarea" placeholder="Write plain text..."></textarea>
+      <button id="createBtn" class="save-btn create-btn">LinkedIn-ify</button>
+      <textarea id="createOutput" class="field-textarea" placeholder="Your corpo post appears here..." readonly></textarea>
+      <button id="copyCreateOutputBtn" class="secondary-btn">Copy</button>
+      <p id="createStatus" class="save-status"></p>
+    </div>
+
     <div class="popup-section popup-stats">
       <div class="stat">
         <span class="stat-value" id="statTranslated">0</span>
@@ -86,6 +95,14 @@
         <span class="stat-value" id="statTokens">0</span>
         <span class="stat-label">tokens used</span>
       </div>
+      <div class="stat model-stat">
+        <span class="stat-model-label">model used</span>
+        <span class="stat-model-value" id="statModelUsed">gpt-4o-mini</span>
+      </div>
+      <div class="stat model-stat">
+        <span class="stat-model-label">estimated cost</span>
+        <span class="stat-model-value" id="statEstimatedCost">$0.0000</span>
+      </div>
     </div>
 
     <div class="popup-footer">
@@ -94,8 +111,8 @@
     </div>
 
     <div class="popup-links">
-      <a id="sourceLink" href="https://github.com/YOUR_GITHUB_USERNAME/linkedout" target="_blank" rel="noopener noreferrer">Source</a>
-      <a id="privacyLink" href="https://github.com/YOUR_GITHUB_USERNAME/linkedout/blob/main/PRIVACY_POLICY.md" target="_blank" rel="noopener noreferrer">Privacy</a>
+      <a id="sourceLink" href="https://github.com/kerapps/LinkedOut" target="_blank" rel="noopener noreferrer">Source</a>
+      <a id="privacyLink" href="https://github.com/kerapps/LinkedOut/blob/main/PRIVACY_POLICY.md" target="_blank" rel="noopener noreferrer">Privacy</a>
     </div>
   </div>
 

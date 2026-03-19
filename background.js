@@ -44,9 +44,13 @@ async function callOpenAI(apiKey, systemPrompt, postText) {
   }
 
   const data = await res.json();
+  const inputTokens = data.usage?.prompt_tokens || 0;
+  const outputTokens = data.usage?.completion_tokens || 0;
   return {
     text: data.choices?.[0]?.message?.content?.trim() || "",
-    usageTokens: data.usage?.total_tokens || 0,
+    usageTokens: data.usage?.total_tokens || inputTokens + outputTokens,
+    inputTokens,
+    outputTokens,
   };
 }
 
@@ -78,16 +82,28 @@ async function callAnthropic(apiKey, systemPrompt, postText) {
   return {
     text: data.content?.[0]?.text?.trim() || "",
     usageTokens: inputTokens + outputTokens,
+    inputTokens,
+    outputTokens,
   };
 }
 
 async function handleTranslation({ provider, apiKey, systemPrompt, postText }) {
   if (provider === "anthropic") {
     const result = await callAnthropic(apiKey, systemPrompt, postText);
-    return { translation: result.text, usageTokens: result.usageTokens };
+    return {
+      translation: result.text,
+      usageTokens: result.usageTokens,
+      inputTokens: result.inputTokens,
+      outputTokens: result.outputTokens,
+    };
   }
   const result = await callOpenAI(apiKey, systemPrompt, postText);
-  return { translation: result.text, usageTokens: result.usageTokens };
+  return {
+    translation: result.text,
+    usageTokens: result.usageTokens,
+    inputTokens: result.inputTokens,
+    outputTokens: result.outputTokens,
+  };
 }
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
