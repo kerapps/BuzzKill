@@ -13,6 +13,13 @@ Inspired by [Kagi Translate's LinkedIn Speak](https://translate.kagi.com/?from=e
 -->
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+## API Key Required
+
+LinkedOut uses your own API key to translate posts — no backend, no account, no subscription.
+Get one from [OpenAI](https://platform.openai.com/api-keys) or [Anthropic](https://console.anthropic.com/settings/keys), paste it in the extension settings, and you're done.
+
+**Cost: ~$0.13 per 1,000 posts** with `gpt-4o-mini`. That's about a penny for every 80 posts. Translations are cached, so revisiting posts costs nothing.
+
 ## Features
 
 - Translate post text into plain language (blunt, sarcastic, or neutral tone)
@@ -71,8 +78,6 @@ Open the extension popup or the in-page HUD to configure:
 | Hide original | Show only the translated version |
 | Hide promoted | Remove promoted / sponsored posts |
 | Keep @mentions and links | Preserve clickable person tags and URLs in translations |
-
-You need your own API key from [OpenAI](https://platform.openai.com/api-keys) or [Anthropic](https://console.anthropic.com/settings/keys).
 
 ## Data & Privacy
 

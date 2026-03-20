@@ -345,6 +345,7 @@
     const promoted = hud.querySelector("#loHudPromoted");
     const keepMentions = hud.querySelector("#loHudKeepMentions");
     const key = hud.querySelector("#loHudApiKey");
+    const translated = hud.querySelector("#loHudTranslated");
     const tokens = hud.querySelector("#loHudTokens");
     const model = hud.querySelector("#loHudModel");
     const cost = hud.querySelector("#loHudCost");
@@ -356,6 +357,7 @@
     if (promoted) promoted.checked = settings.removePromoted !== false;
     if (keepMentions) keepMentions.checked = !!settings.keepMentionsLinks;
     if (key) key.value = settings.apiKey || "";
+    if (translated) translated.textContent = String(stats.translated || 0);
     if (tokens) tokens.textContent = String(stats.total_tokens || 0);
     if (model)
       model.textContent = LinkedOutConfig.modelForProvider(settings.provider);
@@ -445,6 +447,10 @@
           </div>
         </label>
 
+        <div class="linkedout-hud-stats">
+          <span>Posts translated:</span>
+          <strong id="loHudTranslated">0</strong>
+        </div>
         <div class="linkedout-hud-stats">
           <span>Tokens used:</span>
           <strong id="loHudTokens">0</strong>
