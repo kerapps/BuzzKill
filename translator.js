@@ -183,7 +183,7 @@ Rules:
       provider: "openai",
       apiKey: "",
       tone: "blunt",
-      autoTranslate: false,
+      autoTranslate: true,
       hideOriginal: false,
       removePromoted: true,
       keepMentionsLinks: false,

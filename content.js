@@ -12,7 +12,7 @@
   const MAX_TEXT_LEN = 5000;
   const MIN_FEED_CARD_WIDTH = 300;
 
-  let autoTranslate = false;
+  let autoTranslate = true;
   let hideOriginal = false;
   let removePromoted = true;
   let scanCount = 0;
