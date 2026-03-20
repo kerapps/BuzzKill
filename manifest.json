@@ -1,19 +1,31 @@
 {
   "manifest_version": 3,
   "name": "BuzzKill — LinkedIn Corporate Speak Translator",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Translates LinkedIn corporate speak into plain human language. Cut through the hype and humble-brags.",
-  "permissions": ["storage"],
-  "host_permissions": ["https://www.linkedin.com/*"],
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.linkedin.com/*"
+  ],
   "homepage_url": "https://github.com/kerapps/BuzzKill",
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": ["https://www.linkedin.com/*"],
-      "js": ["config.js", "translator.js", "content.js"],
-      "css": ["content.css"],
+      "matches": [
+        "https://www.linkedin.com/*"
+      ],
+      "js": [
+        "config.js",
+        "translator.js",
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
       "run_at": "document_idle"
     }
   ],
