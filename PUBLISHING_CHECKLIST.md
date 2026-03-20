@@ -1,6 +1,6 @@
 # Chrome Web Store Publishing Checklist
 
-Step-by-step guide to publish LinkedOut. Check off each item as you go.
+Step-by-step guide to publish BuzzKill. Check off each item as you go.
 
 ---
 
@@ -13,9 +13,9 @@ Step-by-step guide to publish LinkedOut. Check off each item as you go.
 
 ## 2. Repository & Source
 
-- [ ] Repo is live at <https://github.com/kerapps/LinkedOut>
+- [ ] Repo is live at <https://github.com/kerapps/BuzzKill>
 - [ ] `README.md`, `LICENSE`, and `PRIVACY_POLICY.md` are present and up to date
-- [ ] All links in docs point to `https://github.com/kerapps/LinkedOut`
+- [ ] All links in docs point to `https://github.com/kerapps/BuzzKill`
 - [ ] No API keys, secrets, or `.env` files in the repo
 
 ## 3. Extension Files
@@ -54,10 +54,10 @@ Run the included packaging script:
 ./package.sh
 ```
 
-This creates `linkedout.zip` containing only the extension files. Verify:
+This creates `buzzkill.zip` containing only the extension files. Verify:
 
 ```bash
-unzip -l linkedout.zip
+unzip -l buzzkill.zip
 ```
 
 Should contain: `manifest.json`, `background.js`, `translator.js`, `content.js`, `content.css`, `popup.html`, `popup.js`, `popup.css`, `icons/`.
@@ -66,7 +66,7 @@ Should **not** contain: `README.md`, `LICENSE`, `PRIVACY_POLICY.md`, `store-asse
 
 ## 6. Upload & Fill Dashboard Fields
 
-Go to <https://chrome.google.com/webstore/devconsole> → **New Item** → Upload `linkedout.zip`.
+Go to <https://chrome.google.com/webstore/devconsole> → **New Item** → Upload `buzzkill.zip`.
 
 ### Store listing tab
 
@@ -91,7 +91,7 @@ Copy-paste from the "CWS Privacy Practices Tab" section of `CHROME_STORE_LISTING
 - [ ] Data type disclosures (website content: yes, auth info: yes, everything else: no)
 - [ ] Remote code: **No**
 - [ ] Certify Limited Use compliance: **Yes**
-- [ ] Privacy policy URL: `https://github.com/kerapps/LinkedOut/blob/main/PRIVACY_POLICY.md`
+- [ ] Privacy policy URL: `https://github.com/kerapps/BuzzKill/blob/main/PRIVACY_POLICY.md`
 
 ### Distribution tab
 

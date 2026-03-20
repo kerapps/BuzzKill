@@ -39,7 +39,7 @@ jobs:
 
       - name: Build zip
         run: |
-          zip -r linkedout.zip \
+          zip -r buzzkill.zip \
             manifest.json \
             background.js \
             config.js \
@@ -63,7 +63,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create "${{ steps.version.outputs.tag }}" \
-            linkedout.zip \
-            --title "LinkedOut ${{ steps.version.outputs.version }}" \
-            --notes "Install: download \`linkedout.zip\`, unzip it into a folder, then load unpacked in \`chrome://extensions/\` with Developer mode enabled." \
+            buzzkill.zip \
+            --title "BuzzKill ${{ steps.version.outputs.version }}" \
+            --notes "Install: download \`buzzkill.zip\`, unzip it into a folder, then load unpacked in \`chrome://extensions/\` with Developer mode enabled." \
             --latest

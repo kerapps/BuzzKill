@@ -17,7 +17,7 @@ These files are **not** included in the extension zip — they are only uploaded
 
 1. Open Chrome with a clean profile (or hide other extension icons)
 2. Go to `https://www.linkedin.com/feed/`
-3. Make sure LinkedOut is active and posts are translated
+3. Make sure BuzzKill is active and posts are translated
 4. Take a full-window screenshot at 1280 × 800 resolution
    - macOS: `Cmd + Shift + 4`, then `Space` to capture the window
    - Or use Chrome DevTools → Device toolbar → set to 1280 × 800
@@ -39,7 +39,7 @@ These files are **not** included in the extension zip — they are only uploaded
 | `promo-small.png` | 440 × 280 | PNG |
 
 Design suggestions:
-- Use the LinkedOut icon/branding prominently
+- Use the BuzzKill icon/branding prominently
 - Include a short tagline like "Cut through the corporate speak"
 - Keep it simple — this appears as a small card
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-OUTFILE="linkedout.zip"
+OUTFILE="buzzkill.zip"
 
 rm -f "$OUTFILE"
 

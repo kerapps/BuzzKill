@@ -1,9 +1,9 @@
-# Privacy Policy for LinkedOut
+# Privacy Policy for BuzzKill
 
 _Last updated: 2026-03-19_
 
-This Privacy Policy explains how LinkedOut ("the Extension") handles data.
-LinkedOut is a browser extension that translates LinkedIn post text using a language model provider selected by the user.
+This Privacy Policy explains how BuzzKill ("the Extension") handles data.
+BuzzKill is a browser extension that translates LinkedIn post text using a language model provider selected by the user.
 
 ## 1. Data We Collect and Process
 
@@ -16,16 +16,16 @@ LinkedOut is a browser extension that translates LinkedIn post text using a lang
 | Usage metrics (post count, token count, estimated cost) | Yes | No | Displayed in the extension UI |
 | Translation cache (text hash + result) | Yes | No | Avoid duplicate API requests |
 
-LinkedOut does **not** collect or transmit:
+BuzzKill does **not** collect or transmit:
 
 - Browsing history
 - Personal identifiers (name, email, IP)
 - Credentials other than the API key you provide
-- Analytics or telemetry to any server operated by LinkedOut
+- Analytics or telemetry to any server operated by BuzzKill
 
 ## 2. How Data Is Transmitted
 
-LinkedOut does not operate its own backend server. All processing happens locally in your browser.
+BuzzKill does not operate its own backend server. All processing happens locally in your browser.
 
 When you request a translation or enable auto-translation, the text of the LinkedIn post is sent **directly from your browser** to the API endpoint of the provider you selected:
 
@@ -36,13 +36,13 @@ All requests are transmitted over **HTTPS**. No intermediary server is involved.
 
 ## 3. Data Sharing
 
-- LinkedOut does **not** sell, rent, or trade personal data.
-- LinkedOut does **not** share data with any third party except the AI provider you explicitly configured.
-- LinkedOut does **not** use data for advertising, analytics, or profiling.
+- BuzzKill does **not** sell, rent, or trade personal data.
+- BuzzKill does **not** share data with any third party except the AI provider you explicitly configured.
+- BuzzKill does **not** use data for advertising, analytics, or profiling.
 
 ## 4. Storage and Retention
 
-LinkedOut uses Chrome extension storage APIs:
+BuzzKill uses Chrome extension storage APIs:
 
 - `chrome.storage.sync` — settings and API key (synced across your Chrome profile)
 - `chrome.storage.local` — translation cache and usage statistics
@@ -80,13 +80,13 @@ The use of information received from Chrome APIs adheres to the [Chrome Web Stor
 
 ## 8. Web Browsing Activity
 
-LinkedOut reads the text content of LinkedIn feed posts solely to provide translation. It does **not** collect, store, or transmit browsing history, URLs visited, or any page content outside of the specific post text selected for translation.
+BuzzKill reads the text content of LinkedIn feed posts solely to provide translation. It does **not** collect, store, or transmit browsing history, URLs visited, or any page content outside of the specific post text selected for translation.
 
 This collection of website content is required for the extension's user-facing feature (translation) and is described prominently in the Chrome Web Store listing and this privacy policy.
 
 ## 9. Children's Privacy
 
-LinkedOut is not directed to children under 13, and we do not knowingly collect personal information from children.
+BuzzKill is not directed to children under 13, and we do not knowingly collect personal information from children.
 
 ## 10. Changes to This Policy
 
@@ -96,4 +96,4 @@ This policy may be updated from time to time. The "Last updated" date above indi
 
 For privacy questions, open an issue in the repository:
 
-- <https://github.com/kerapps/LinkedOut/issues>
+- <https://github.com/kerapps/BuzzKill/issues>

@@ -1,5 +1,5 @@
 # Build output
-linkedout.zip
+buzzkill.zip
 
 # Store assets (screenshots / promo images — too large for git)
 store-assets/*.png
@@ -20,3 +20,4 @@ Thumbs.db
 # Environment
 .env
 .env.*
+screenshots/

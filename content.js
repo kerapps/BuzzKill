@@ -1,12 +1,12 @@
 (() => {
   const DEBUG = false;
-  const SOURCE_URL = "https://github.com/kerapps/LinkedOut";
+  const SOURCE_URL = "https://github.com/kerapps/BuzzKill";
   const PRIVACY_URL =
-    "https://github.com/kerapps/LinkedOut/blob/main/PRIVACY_POLICY.md";
+    "https://github.com/kerapps/BuzzKill/blob/main/PRIVACY_POLICY.md";
   const PROCESSED_ATTR = "data-linkedout";
   const RESCAN_INTERVAL_MS = 2500;
   const LOG = (...args) => {
-    if (DEBUG) console.log("[LinkedOut]", ...args);
+    if (DEBUG) console.log("[BuzzKill]", ...args);
   };
   const MIN_TEXT_LEN = 80;
   const MAX_TEXT_LEN = 5000;
@@ -297,7 +297,7 @@
 
     const header = document.createElement("div");
     header.className = "linkedout-card-header";
-    header.innerHTML = `<span class="linkedout-label">LinkedOut</span>`;
+    header.innerHTML = `<span class="linkedout-label">BuzzKill</span>`;
 
     const toggle = document.createElement("button");
     toggle.className = "linkedout-toggle";
@@ -335,7 +335,7 @@
     const hud = document.querySelector(".linkedout-hud");
     if (!hud) return;
 
-    const settings = await LinkedOutTranslator.getSettings();
+    const settings = await BuzzKillTranslator.getSettings();
     const stats = await readStats();
 
     const provider = hud.querySelector("#loHudProvider");
@@ -360,9 +360,9 @@
     if (translated) translated.textContent = String(stats.translated || 0);
     if (tokens) tokens.textContent = String(stats.total_tokens || 0);
     if (model)
-      model.textContent = LinkedOutConfig.modelForProvider(settings.provider);
+      model.textContent = BuzzKillConfig.modelForProvider(settings.provider);
     if (cost) {
-      const rates = LinkedOutConfig.rateForProvider(settings.provider);
+      const rates = BuzzKillConfig.rateForProvider(settings.provider);
       const exact = Number(stats.estimated_cost_usd || 0);
       if (exact > 0) {
         cost.textContent = `$${exact.toFixed(4)}`;
@@ -382,14 +382,14 @@
     const hud = document.createElement("div");
     hud.className = "linkedout-hud";
     hud.innerHTML = `
-      <button class="linkedout-hud-fab" title="LinkedOut">out</button>
+      <button class="linkedout-hud-fab" title="BuzzKill">bk</button>
       <div class="linkedout-hud-panel" aria-hidden="true">
         <div class="linkedout-hud-header">
-          <strong>LinkedOut</strong>
+          <strong>BuzzKill</strong>
           <span class="linkedout-hud-sub">enabled</span>
         </div>
 
-        <div class="linkedout-hud-tabs" role="tablist" aria-label="LinkedOut panel tabs">
+        <div class="linkedout-hud-tabs" role="tablist" aria-label="BuzzKill panel tabs">
           <button id="loTabSettings" class="linkedout-hud-tab is-active" role="tab" aria-selected="true">Settings</button>
           <button id="loTabCompose" class="linkedout-hud-tab" role="tab" aria-selected="false">Create post</button>
         </div>
@@ -569,7 +569,7 @@
       createBtn.disabled = true;
       createBtn.textContent = "Generating...";
       try {
-        const corp = await LinkedOutTranslator.linkedinize(plainText);
+        const corp = await BuzzKillTranslator.linkedinize(plainText);
         outputEl.value = corp;
         await refreshHudValues();
       } catch (err) {
@@ -615,7 +615,7 @@
 
     try {
       const postId = extractPostId(postEl);
-      const translation = await LinkedOutTranslator.translate(text, { postId });
+      const translation = await BuzzKillTranslator.translate(text, { postId });
       loading.remove();
 
       const { card, toggle } = createTranslationCard(translation, linkMap);
@@ -739,7 +739,7 @@
     const banner = document.createElement("div");
     banner.className = "linkedout-banner";
     banner.innerHTML =
-      '<span class="linkedout-banner-text">LinkedOut is active &mdash; auto-translating</span>';
+      '<span class="linkedout-banner-text">BuzzKill is active &mdash; auto-translating</span>';
 
     const dismiss = document.createElement("button");
     dismiss.className = "linkedout-banner-dismiss";
@@ -757,7 +757,7 @@
   async function init() {
     LOG("Initializing on", window.location.href);
 
-    const settings = await LinkedOutTranslator.getSettings();
+    const settings = await BuzzKillTranslator.getSettings();
     autoTranslate = settings.autoTranslate;
     hideOriginal = settings.hideOriginal;
     removePromoted = settings.removePromoted !== false;

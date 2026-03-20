@@ -1,4 +1,4 @@
-# Chrome Web Store Listing — LinkedOut
+# Chrome Web Store Listing — BuzzKill
 
 Ready-to-paste content for each field in the Chrome Web Store Developer Dashboard.
 
@@ -7,7 +7,7 @@ Ready-to-paste content for each field in the Chrome Web Store Developer Dashboar
 ## Extension Name
 
 ```
-LinkedOut — LinkedIn Corporate Speak Translator
+BuzzKill — LinkedIn Corporate Speak Translator
 ```
 
 ## Short Description (132 characters max)
@@ -21,10 +21,10 @@ _(126 characters)_
 ## Detailed Description
 
 ```
-LinkedOut cuts through the LinkedIn jargon so you can read what people actually mean.
+BuzzKill cuts through the LinkedIn jargon so you can read what people actually mean.
 
 HOW IT WORKS
-You provide your own API key (OpenAI or Anthropic). When you request a translation — or enable auto-translate — LinkedOut sends the post text to the AI provider you selected and displays the plain-language version right in your feed.
+You provide your own API key (OpenAI or Anthropic). When you request a translation — or enable auto-translate — BuzzKill sends the post text to the AI provider you selected and displays the plain-language version right in your feed.
 
 No custom backend. No data collection. No tracking. Your API key, your calls.
 
@@ -46,11 +46,11 @@ DATA & PRIVACY
 • All requests go directly from your browser over HTTPS — no intermediary server.
 • Settings, cache, and stats are stored locally in your browser.
 • No personal data is collected, sold, or shared for advertising.
-• Full privacy policy: https://github.com/kerapps/LinkedOut/blob/main/PRIVACY_POLICY.md
+• Full privacy policy: https://github.com/kerapps/BuzzKill/blob/main/PRIVACY_POLICY.md
 
 OPEN SOURCE
-LinkedOut is free and open source under the MIT license.
-Source code: https://github.com/kerapps/LinkedOut
+BuzzKill is free and open source under the MIT license.
+Source code: https://github.com/kerapps/BuzzKill
 ```
 
 ## Category
@@ -68,19 +68,19 @@ English
 ## Support URL
 
 ```
-https://github.com/kerapps/LinkedOut/issues
+https://github.com/kerapps/BuzzKill/issues
 ```
 
 ## Homepage URL
 
 ```
-https://github.com/kerapps/LinkedOut
+https://github.com/kerapps/BuzzKill
 ```
 
 ## Privacy Policy URL
 
 ```
-https://github.com/kerapps/LinkedOut/blob/main/PRIVACY_POLICY.md
+https://github.com/kerapps/BuzzKill/blob/main/PRIVACY_POLICY.md
 ```
 
 ---

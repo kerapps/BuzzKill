@@ -1,4 +1,4 @@
-const LinkedOutConfig = {
+const BuzzKillConfig = {
   models: {
     openai: "gpt-4o-mini",
     anthropic: "claude-3-5-haiku-latest",

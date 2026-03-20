@@ -1,5 +1,5 @@
-const LinkedOutTranslator = (() => {
-  const PRICING_PER_MILLION = LinkedOutConfig.rates;
+const BuzzKillTranslator = (() => {
+  const PRICING_PER_MILLION = BuzzKillConfig.rates;
 
   const TONE_PROMPTS = {
     blunt: `ABSOLUTE RULE #1 — LANGUAGE: Your output MUST be in the EXACT SAME LANGUAGE as the input. If the post is in French, reply in French. If in English, reply in English. If in Spanish, reply in Spanish. NEVER translate between languages. This overrides everything else.
@@ -193,7 +193,7 @@ Rules:
   }
 
   function linkedinSpeakPrompt() {
-    return LinkedOutConfig.linkedinizePrompt;
+    return BuzzKillConfig.linkedinizePrompt;
   }
 
   function humanTranslatePrompt(tone, keepMentionsLinks) {
@@ -257,7 +257,7 @@ Rules:
 
     if (!settings.apiKey) {
       throw new Error(
-        "No API key configured. Click the LinkedOut icon to set one up."
+        "No API key configured. Click the BuzzKill icon to set one up."
       );
     }
 
@@ -319,7 +319,7 @@ Rules:
     const settings = await getSettings();
     if (!settings.apiKey) {
       throw new Error(
-        "No API key configured. Click the LinkedOut icon to set one up."
+        "No API key configured. Click the BuzzKill icon to set one up."
       );
     }
 

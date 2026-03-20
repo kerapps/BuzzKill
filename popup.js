@@ -11,11 +11,11 @@ const DEFAULTS = {
 };
 
 function modelForProvider(provider) {
-  return LinkedOutConfig.modelForProvider(provider);
+  return BuzzKillConfig.modelForProvider(provider);
 }
 
 function rateForProvider(provider) {
-  return LinkedOutConfig.rateForProvider(provider);
+  return BuzzKillConfig.rateForProvider(provider);
 }
 
 function formatUsd(value, approximate = false) {
@@ -148,7 +148,7 @@ async function createCorporatePost() {
       payload: {
         provider: settings.provider,
         apiKey: settings.apiKey,
-        systemPrompt: LinkedOutConfig.linkedinizePrompt,
+        systemPrompt: BuzzKillConfig.linkedinizePrompt,
         postText: input,
       },
     });

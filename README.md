@@ -1,7 +1,7 @@
-# LinkedOut — LinkedIn Corporate Speak Translator
+# BuzzKill — LinkedIn Corporate Speak Translator
 
 <p align="center">
-  <img src="store-assets/store-hero.png" alt="LinkedOut — LinkedIn Corporate Speak Translator" width="100%">
+  <img src="store-assets/store-hero.png" alt="BuzzKill — LinkedIn Corporate Speak Translator" width="100%">
 </p>
 
 A Chrome extension that translates LinkedIn corporate speak into plain language — and can rewrite your plain text into LinkedIn-style corporate tone.
@@ -13,7 +13,7 @@ A Chrome extension that translates LinkedIn corporate speak into plain language 
 
 ## API Key Required
 
-LinkedOut uses your own API key to translate posts — no backend, no account, no subscription.
+BuzzKill uses your own API key to translate posts — no backend, no account, no subscription.
 Get one from [OpenAI](https://platform.openai.com/api-keys) or [Anthropic](https://console.anthropic.com/settings/keys), paste it in the extension settings, and you're done.
 
 **Cost: ~$0.13 per 1,000 posts** with `gpt-4o-mini`. That's about a penny for every 80 posts. Translations are cached, so revisiting posts costs nothing.
@@ -49,13 +49,13 @@ _Coming soon — pending Chrome Web Store review._
 
 If you prefer not to install from the Chrome Web Store, you can sideload the pre-packaged extension:
 
-1. Download the latest `linkedout.zip` from [Releases](https://github.com/kerapps/LinkedOut/releases), or build it yourself:
+1. Download the latest `buzzkill.zip` from [Releases](https://github.com/kerapps/BuzzKill/releases), or build it yourself:
    ```bash
-   git clone https://github.com/kerapps/LinkedOut.git
-   cd LinkedOut
+   git clone https://github.com/kerapps/BuzzKill.git
+   cd BuzzKill
    ./package.sh
    ```
-2. Unzip `linkedout.zip` into a folder (e.g. `~/linkedout-ext/`)
+2. Unzip `buzzkill.zip` into a folder (e.g. `~/buzzkill-ext/`)
 3. Open `chrome://extensions/`
 4. Enable **Developer mode** (top-right toggle)
 5. Click **Load unpacked**
@@ -79,7 +79,7 @@ Open the extension popup or the in-page HUD to configure:
 
 ## Data & Privacy
 
-LinkedOut takes privacy seriously:
+BuzzKill takes privacy seriously:
 
 - **No backend server** — the extension runs entirely in your browser.
 - **Post text is sent only to the AI provider you selected** (OpenAI or Anthropic), using your own API key, solely for translation.
@@ -105,7 +105,7 @@ LICENSE              MIT license
 
 ## Contributing
 
-Issues and PRs are welcome at <https://github.com/kerapps/LinkedOut>.
+Issues and PRs are welcome at <https://github.com/kerapps/BuzzKill>.
 
 ## License
 
