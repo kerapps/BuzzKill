@@ -8,6 +8,7 @@ rm -f "$OUTFILE"
 zip -r "$OUTFILE" \
   manifest.json \
   background.js \
+  config.js \
   translator.js \
   content.js \
   content.css \

@@ -9,22 +9,12 @@ const DEFAULTS = {
   removePromoted: true,
 };
 
-const LINKEDINIZE_PROMPT = `You rewrite plain text into polished LinkedIn corporate-speak.
-
-CRITICAL LANGUAGE RULE: Your output MUST be in the EXACT SAME language as the input. English in → English out. French in → French out. NEVER switch languages.
-
-Output only the rewritten post body (no intro, no quotes, no explanation).
-Keep it concise, high-energy, and platform-native, with 1-2 short paragraphs and optional tasteful emoji.
-No hashtags unless the source clearly asks for them.`;
-
 function modelForProvider(provider) {
-  if (provider === "anthropic") return "claude-3-5-haiku-latest";
-  return "gpt-4o-mini";
+  return LinkedOutConfig.modelForProvider(provider);
 }
 
 function rateForProvider(provider) {
-  if (provider === "anthropic") return { input: 1.0, output: 5.0 };
-  return { input: 0.15, output: 0.6 };
+  return LinkedOutConfig.rateForProvider(provider);
 }
 
 function formatUsd(value, approximate = false) {
@@ -155,7 +145,7 @@ async function createCorporatePost() {
       payload: {
         provider: settings.provider,
         apiKey: settings.apiKey,
-        systemPrompt: LINKEDINIZE_PROMPT,
+        systemPrompt: LinkedOutConfig.linkedinizePrompt,
         postText: input,
       },
     });

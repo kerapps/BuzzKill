@@ -285,15 +285,9 @@
     if (key) key.value = settings.apiKey || "";
     if (tokens) tokens.textContent = String(stats.total_tokens || 0);
     if (model)
-      model.textContent =
-        settings.provider === "anthropic"
-          ? "claude-3-5-haiku-latest"
-          : "gpt-4o-mini";
+      model.textContent = LinkedOutConfig.modelForProvider(settings.provider);
     if (cost) {
-      const rates =
-        settings.provider === "anthropic"
-          ? { input: 1.0, output: 5.0 }
-          : { input: 0.15, output: 0.6 };
+      const rates = LinkedOutConfig.rateForProvider(settings.provider);
       const exact = Number(stats.estimated_cost_usd || 0);
       if (exact > 0) {
         cost.textContent = `$${exact.toFixed(4)}`;
@@ -377,7 +371,7 @@
         </div>
         <div class="linkedout-hud-stats">
           <span>Model used:</span>
-          <strong id="loHudModel">gpt-4o-mini</strong>
+          <strong id="loHudModel">—</strong>
         </div>
         <div class="linkedout-hud-stats">
           <span>Estimated cost:</span>
@@ -576,8 +570,11 @@
     return wrapper;
   }
 
-  function processPost(postEl) {
-    if (postEl.getAttribute(PROCESSED_ATTR)) return;
+  function isProcessed(postEl) {
+    return !!postEl.getAttribute(PROCESSED_ATTR);
+  }
+
+  function markProcessed(postEl) {
     postEl.setAttribute(PROCESSED_ATTR, "true");
   }
 
@@ -600,14 +597,17 @@
     }
 
     filteredCandidates.forEach(({ container, textEl, text }) => {
+      if (isProcessed(container)) return;
+      if (container.querySelector(".linkedout-wrapper")) return;
+
       if (removePromoted && isPromotedPost(container)) {
         container.style.display = "none";
         container.setAttribute("data-linkedout-promoted-removed", "1");
+        markProcessed(container);
         return;
       }
 
-      processPost(container);
-      if (container.querySelector(".linkedout-wrapper")) return;
+      markProcessed(container);
 
       if (autoTranslate) {
         translatePost(container, textEl, text);
@@ -625,6 +625,7 @@
   }
 
   function initObserver() {
+    let mutationTimer = null;
     const observer = new MutationObserver((mutations) => {
       let shouldScan = false;
       for (const mutation of mutations) {
@@ -633,8 +634,11 @@
           break;
         }
       }
-      if (shouldScan) {
-        requestAnimationFrame(scanPosts);
+      if (shouldScan && !mutationTimer) {
+        mutationTimer = setTimeout(() => {
+          mutationTimer = null;
+          scanPosts();
+        }, 500);
       }
     });
 
@@ -702,9 +706,11 @@
       { passive: true }
     );
 
+    let reloadTimer = null;
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area === "sync" && changes.linkedout_settings) {
-        window.location.reload();
+        if (reloadTimer) clearTimeout(reloadTimer);
+        reloadTimer = setTimeout(() => window.location.reload(), 800);
         return;
       }
 

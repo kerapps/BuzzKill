@@ -1,8 +1,5 @@
 const LinkedOutTranslator = (() => {
-  const PRICING_PER_MILLION = {
-    openai: { input: 0.15, output: 0.6 }, // gpt-4o-mini
-    anthropic: { input: 1.0, output: 5.0 }, // claude haiku tier
-  };
+  const PRICING_PER_MILLION = LinkedOutConfig.rates;
 
   const TONE_PROMPTS = {
     blunt: `Rewrite this LinkedIn post in first person as the author dropping all pretense. Flat, cold, zero humor — just the uncomfortable truth stated plainly, like someone with no social filter.
@@ -98,17 +95,42 @@ Rules:
   }
 
   async function persistCache() {
-    const entries = Array.from(cache.entries()).slice(-500); // keep last 500
-    await chrome.storage.local.set({
-      linkedout_cache: JSON.stringify(entries),
-    });
+    try {
+      const entries = Array.from(cache.entries()).slice(-500);
+      await chrome.storage.local.set({
+        linkedout_cache: JSON.stringify(entries),
+      });
+    } catch {
+      // storage quota exceeded — evict oldest half and retry
+      const entries = Array.from(cache.entries());
+      const trimmed = entries.slice(Math.floor(entries.length / 2));
+      cache.clear();
+      for (const [k, v] of trimmed) cache.set(k, v);
+      try {
+        await chrome.storage.local.set({
+          linkedout_cache: JSON.stringify(trimmed),
+        });
+      } catch { /* give up silently */ }
+    }
   }
 
   async function persistPostCache() {
-    const entries = Array.from(postCache.entries()).slice(-1000);
-    await chrome.storage.local.set({
-      linkedout_post_cache: JSON.stringify(entries),
-    });
+    try {
+      const entries = Array.from(postCache.entries()).slice(-1000);
+      await chrome.storage.local.set({
+        linkedout_post_cache: JSON.stringify(entries),
+      });
+    } catch {
+      const entries = Array.from(postCache.entries());
+      const trimmed = entries.slice(Math.floor(entries.length / 2));
+      postCache.clear();
+      for (const [k, v] of trimmed) postCache.set(k, v);
+      try {
+        await chrome.storage.local.set({
+          linkedout_post_cache: JSON.stringify(trimmed),
+        });
+      } catch { /* give up silently */ }
+    }
   }
 
   async function getSettings() {
@@ -125,18 +147,7 @@ Rules:
   }
 
   function linkedinSpeakPrompt() {
-    return `You are a LinkedIn corporate messaging assistant. Transform plain, honest text into polished LinkedIn-style corporate speak.
-
-CRITICAL LANGUAGE RULE — you MUST follow this:
-Your output MUST be in the EXACT SAME language as the input. English in → English out. French in → French out. NEVER switch languages.
-
-Other rules:
-- Keep the core meaning of the original text
-- Sound upbeat, professional, and slightly self-promotional
-- Use concise, readable language
-- You may add 1-2 tasteful hashtags at the end
-- Do NOT invent facts
-- Return ONLY the rewritten post text`;
+    return LinkedOutConfig.linkedinizePrompt;
   }
 
   function humanTranslatePrompt(tone) {

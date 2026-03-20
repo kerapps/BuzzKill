@@ -1,9 +1,15 @@
 const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 
+const MODELS = {
+  openai: "gpt-4o-mini",
+  anthropic: "claude-3-5-haiku-latest",
+};
+
 const queue = [];
 let activeRequests = 0;
 const MAX_CONCURRENT = 3;
+const MAX_QUEUE_SIZE = 50;
 const BATCH_DELAY_MS = 500;
 
 function processQueue() {
@@ -20,6 +26,11 @@ function processQueue() {
   }
 }
 
+async function getApiKey() {
+  const result = await chrome.storage.sync.get("linkedout_settings");
+  return result.linkedout_settings?.apiKey || "";
+}
+
 async function callOpenAI(apiKey, systemPrompt, postText) {
   const res = await fetch(OPENAI_URL, {
     method: "POST",
@@ -28,7 +39,7 @@ async function callOpenAI(apiKey, systemPrompt, postText) {
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: "gpt-4o-mini",
+      model: MODELS.openai,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: postText },
@@ -64,7 +75,7 @@ async function callAnthropic(apiKey, systemPrompt, postText) {
       "anthropic-dangerous-direct-browser-access": "true",
     },
     body: JSON.stringify({
-      model: "claude-3-5-haiku-latest",
+      model: MODELS.anthropic,
       max_tokens: 1024,
       system: systemPrompt,
       messages: [{ role: "user", content: postText }],
@@ -88,16 +99,11 @@ async function callAnthropic(apiKey, systemPrompt, postText) {
 }
 
 async function handleTranslation({ provider, apiKey, systemPrompt, postText }) {
-  if (provider === "anthropic") {
-    const result = await callAnthropic(apiKey, systemPrompt, postText);
-    return {
-      translation: result.text,
-      usageTokens: result.usageTokens,
-      inputTokens: result.inputTokens,
-      outputTokens: result.outputTokens,
-    };
-  }
-  const result = await callOpenAI(apiKey, systemPrompt, postText);
+  const key = apiKey || (await getApiKey());
+  if (!key) throw new Error("No API key configured.");
+
+  const call = provider === "anthropic" ? callAnthropic : callOpenAI;
+  const result = await call(key, systemPrompt, postText);
   return {
     translation: result.text,
     usageTokens: result.usageTokens,
@@ -108,9 +114,13 @@ async function handleTranslation({ provider, apiKey, systemPrompt, postText }) {
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message.type === "TRANSLATE") {
+    if (queue.length >= MAX_QUEUE_SIZE) {
+      sendResponse({ success: false, error: "Too many pending requests. Try again shortly." });
+      return false;
+    }
     queue.push({ request: message.payload, sendResponse });
     processQueue();
-    return true; // keep message channel open for async response
+    return true;
   }
 
   if (message.type === "PING") {
