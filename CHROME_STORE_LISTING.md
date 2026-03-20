@@ -28,11 +28,14 @@ You provide your own API key (OpenAI or Anthropic). When you request a translati
 
 No custom backend. No data collection. No tracking. Your API key, your calls.
 
+COST: ~$0.13 per 1,000 posts with gpt-4o-mini. Translations are cached, so revisiting posts costs nothing.
+
 FEATURES
 • Translate posts into plain language — choose blunt, sarcastic, or neutral tone
 • Auto-translate mode — every post translated as you scroll
 • Hide original text — show only the translated version
 • Hide promoted / sponsored posts (enabled by default)
+• Keep @mentions and links — optionally preserve clickable person tags and URLs in translations
 • In-page HUD with quick-access settings and stats
 • "Create a post" mode — convert plain text into LinkedIn corporate speak
 • Translation cache — avoids duplicate API calls to save tokens
@@ -89,7 +92,7 @@ Fill these in the **Privacy practices** tab of the Developer Dashboard.
 ### Single purpose description
 
 ```
-Translates LinkedIn post text into plain language using the user's own AI API key, and optionally rewrites plain text into LinkedIn corporate style.
+Translates LinkedIn post text into plain language using the user's own AI API key, with optional @mention and link preservation, and can rewrite plain text into LinkedIn corporate style.
 ```
 
 ### Permission justification: host_permissions (https://www.linkedin.com/*)
