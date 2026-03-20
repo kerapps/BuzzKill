@@ -132,14 +132,19 @@ Rules:
     }
   }
 
+  function isContextValid() {
+    try { return !!chrome.runtime?.id; } catch { return false; }
+  }
+
   async function persistCache() {
+    if (!isContextValid()) return;
     try {
       const entries = Array.from(cache.entries()).slice(-500);
       await chrome.storage.local.set({
         linkedout_cache: JSON.stringify(entries),
       });
     } catch {
-      // storage quota exceeded — evict oldest half and retry
+      if (!isContextValid()) return;
       const entries = Array.from(cache.entries());
       const trimmed = entries.slice(Math.floor(entries.length / 2));
       cache.clear();
@@ -153,12 +158,14 @@ Rules:
   }
 
   async function persistPostCache() {
+    if (!isContextValid()) return;
     try {
       const entries = Array.from(postCache.entries()).slice(-1000);
       await chrome.storage.local.set({
         linkedout_post_cache: JSON.stringify(entries),
       });
     } catch {
+      if (!isContextValid()) return;
       const entries = Array.from(postCache.entries());
       const trimmed = entries.slice(Math.floor(entries.length / 2));
       postCache.clear();
@@ -204,6 +211,7 @@ Rules:
     systemPrompt,
     postText,
   }) {
+    if (!isContextValid()) throw new Error("Extension was updated. Please reload the page.");
     return new Promise((resolve, reject) => {
       chrome.runtime.sendMessage(
         {
@@ -349,6 +357,7 @@ Rules:
     outputTokensInc = 0,
     costIncUSD = 0,
   } = {}) {
+    if (!isContextValid()) return;
     const result = await chrome.storage.local.get("linkedout_stats");
     const stats = result.linkedout_stats || {
       translated: 0,
