@@ -22,8 +22,39 @@
     return document.querySelector("main");
   }
 
+  let keepMentionsLinks = false;
+
   function normalizeText(text) {
     return (text || "").replace(/\s+/g, " ").trim();
+  }
+
+  function extractRichText(el) {
+    const parts = [];
+    const walk = (node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        parts.push(node.textContent);
+        return;
+      }
+      if (!(node instanceof HTMLElement)) return;
+      if (isInjectedElement(node)) return;
+
+      const tag = node.tagName;
+      if (tag === "A") {
+        const href = node.getAttribute("href") || "";
+        const text = (node.innerText || "").trim();
+        if (href.includes("/in/") && text) {
+          parts.push(`@${text}`);
+          return;
+        }
+        if ((href.startsWith("http") || href.startsWith("www")) && text) {
+          parts.push(`${text} (${href})`);
+          return;
+        }
+      }
+      for (const child of node.childNodes) walk(child);
+    };
+    walk(el);
+    return normalizeText(parts.join(" "));
   }
 
   function isInjectedElement(el) {
@@ -208,7 +239,8 @@
       LOG("ACCEPT score:", score.toFixed(1), "relTop:", relativeTop.toFixed(3), preview);
 
       if (!existing || score > existing.score) {
-        byContainer.set(container, { container, textEl: el, text, score });
+        const richText = keepMentionsLinks ? extractRichText(el) : text;
+        byContainer.set(container, { container, textEl: el, text: richText, score });
       }
     }
 
@@ -684,6 +716,7 @@
     autoTranslate = settings.autoTranslate;
     hideOriginal = settings.hideOriginal;
     removePromoted = settings.removePromoted !== false;
+    keepMentionsLinks = !!settings.keepMentionsLinks;
 
     LOG("Settings:", {
       autoTranslate,
