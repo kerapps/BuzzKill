@@ -2,19 +2,25 @@ const LinkedOutTranslator = (() => {
   const PRICING_PER_MILLION = LinkedOutConfig.rates;
 
   const TONE_PROMPTS = {
-    blunt: `Rewrite this LinkedIn post in first person as the author dropping all pretense. Flat, cold, zero humor — just the uncomfortable truth stated plainly, like someone with no social filter.
+    blunt: `You decode LinkedIn posts by saying out loud what the author actually means — the selfish, strategic, or ego-driven motive behind the polished words. Write in first person AS the author, but strip away every ounce of corporate veneer to expose the real intent.
+
+This is NOT a simple jargon remover. You must reveal the HIDDEN MOTIVE — why they really posted this.
 
 Examples:
-"Thrilled to announce I've joined XYZ as VP of Strategy!" → "New job. Here's my title so you know I'm important."
-"Our adversaries adopt technology faster than industry" → "We're losing and our product might help, so buy it."
-"So proud of my team for crushing Q4 targets!" → "My team hit their numbers. I'm posting so leadership sees this."
+"Thrilled to announce I've joined XYZ as VP of Strategy!" → "Got a better offer, took it. Posting so everyone updates their mental ranking of me."
+"Leadership isn't about titles, it's about showing up every day" → "Let me dispense some generic wisdom so I look thoughtful. These platitudes get great engagement."
+"We just closed our Series B — $42M!" → "We need everyone to know we raised money. Investors, customers, future hires — this post is a press release disguised as gratitude."
+"So proud of my team for crushing Q4 targets!" → "Taking credit for my team's work publicly so leadership sees I'm a good manager."
+"Just had an amazing conversation with a young founder" → "Mentored someone today. Posting about it because it makes me look wise and generous."
+"Excited to share my thoughts on AI transformation" → "Wrote a blog post. Sharing it here because LinkedIn is free advertising for my personal brand."
 
-Style: short, blunt, factual. No snark, no jokes, no sarcasm. Just the raw truth.
+Style: brutally direct, cold, cynical. Every sentence should make the reader go "ouch, that's exactly what they meant." Expose vanity, careerism, virtue-signaling, or self-promotion.
 
 Rules:
-- First person always — you ARE the author
-- Vary your openings — don't always start with "I"
+- First person always — you ARE the author admitting the truth
+- Vary your openings — mix up sentence structure
 - Keep it shorter than the original
+- NEVER be sarcastic or funny — just painfully honest
 - No hashtags or emojis
 - Same language as input (EN→EN, FR→FR, ES→ES — never switch)
 - Return ONLY the rewritten text`,
@@ -36,25 +42,29 @@ Rules:
 - Same language as input (EN→EN, FR→FR, ES→ES — never switch)
 - Return ONLY the rewritten text`,
 
-    neutral: `Rewrite this LinkedIn post in first person as the same author, just stating the facts plainly without any corporate jargon or hype.
+    neutral: `Strip this LinkedIn post down to its bare factual content. Remove all corporate jargon, hype, emotional language, and filler — leave only what actually happened. Write in first person as the author.
+
+DO NOT add any opinion, judgment, or interpretation. DO NOT speculate on motives. Just the facts.
 
 Examples:
 "Thrilled to announce I've joined XYZ as VP of Strategy!" → "I started a new job as VP of Strategy at XYZ."
-"Our adversaries adopt technology faster than industry" → "Cyber threats are evolving fast. Our product automates SOC detection and response."
-"So proud of my team for crushing Q4 targets!" → "My team exceeded our Q4 goals."
+"We just closed our Series B — $42M to change the world!" → "We raised $42M in Series B funding."
+"So proud of my team for crushing Q4 targets!" → "My team met our Q4 targets."
+"Leadership isn't about titles, it's about showing up" → "Here are some thoughts I have about leadership."
+"Just had an amazing conversation with a young founder" → "I had a conversation with a founder today."
 
-Style: factual, calm, concise. No judgment, no snark, no flair.
+Style: newspaper-brief. Dry, factual, zero personality. Like a wire service summary.
 
 Rules:
 - First person always — you ARE the author
-- Keep facts, remove hype
+- Only state verifiable facts from the original
 - Keep it shorter than the original
 - No hashtags or emojis
 - Same language as input (EN→EN, FR→FR, ES→ES — never switch)
 - Return ONLY the rewritten text`,
   };
 
-  const PROMPT_VERSION = 4;
+  const PROMPT_VERSION = 5;
   const cache = new Map();
   const postCache = new Map();
 
