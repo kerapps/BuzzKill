@@ -182,19 +182,18 @@
   }
 
   function isInsideCommentSection(el) {
-    let node = el.parentElement;
+    let node = el;
     while (node) {
-      if (node.classList && (
-        [...node.classList].some(c => /comment/i.test(c)) ||
-        node.getAttribute("data-finite-scroll") !== null
-      )) return true;
-
-      const text = node.innerText || "";
-      const buttons = node.querySelectorAll("button");
-      for (const btn of buttons) {
-        const label = (btn.textContent || "").trim().toLowerCase();
-        if (label === "reply" || label === "répondre" || label === "antworten" || label === "responder") {
-          return true;
+      if (node.classList) {
+        const classes = [...node.classList].join(" ").toLowerCase();
+        if (/comments-comment-item|comments-comments-list|comment-item__/.test(classes)) return true;
+      }
+      const replyBtn = node.querySelector && node.querySelector("button");
+      if (replyBtn) {
+        const label = (replyBtn.textContent || "").trim().toLowerCase();
+        if (/^(reply|répondre|antworten|responder)$/.test(label)) {
+          const parentCard = findCardContainer(el);
+          if (node !== parentCard && !node.contains(parentCard)) return true;
         }
       }
       node = node.parentElement;
@@ -212,17 +211,6 @@
     if (el.closest(".artdeco-modal, .artdeco-dropdown__content")) return true;
 
     if (isInsideCommentSection(el)) return true;
-
-    const elRect = el.getBoundingClientRect();
-    const container = findCardContainer(el);
-    const containerRect = container.getBoundingClientRect();
-    if (containerRect.height > 0) {
-      const relTop = (elRect.top - containerRect.top) / containerRect.height;
-      if (relTop < 0.05) {
-        const hasProfileImg = container.querySelector("img[class*='avatar'], img[class*='profile'], img[alt*='photo']");
-        if (hasProfileImg && text.length < 300) return true;
-      }
-    }
 
     if (text.length < 200) {
       if (
