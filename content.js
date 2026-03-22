@@ -212,11 +212,15 @@
 
   function looksLikeFeedPost(container) {
     if (container.hasAttribute("data-urn")) return true;
+    if (container.querySelector("[data-urn]")) return true;
     if (container.querySelector("a[href*='/feed/update/']")) return true;
     if (container.querySelector("a[href*='/posts/']")) return true;
-    if (container.querySelector("button[aria-label*='Like'], button[aria-label*='Comment'], button[aria-label*='Repost']")) return true;
-    if (container.querySelector(".feed-shared-update-v2__description-wrapper")) return true;
-    if (container.querySelector(".social-details-social-counts")) return true;
+    if (container.querySelector("[class*='social-actions'], [class*='social-details'], [class*='feed-shared']")) return true;
+    const buttons = container.querySelectorAll("button");
+    if (buttons.length >= 3) {
+      const bar = container.querySelector("[class*='social-action'], [role='group']");
+      if (bar) return true;
+    }
     return false;
   }
 
