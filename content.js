@@ -1,3 +1,6 @@
+// Look at you! Looking at the code, you must be good!
+// Sorry to disappoint you, but there are no LLM keys stored in this repo. Good try though!
+
 (() => {
   const DEBUG = false;
   const SOURCE_URL = "https://github.com/kerapps/BuzzKill";
