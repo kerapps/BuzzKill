@@ -8,7 +8,7 @@
   const LOG = (...args) => {
     if (DEBUG) console.log("[BuzzKill]", ...args);
   };
-  const MIN_TEXT_LEN = 80;
+  const MIN_TEXT_LEN = 200;
   const MAX_TEXT_LEN = 5000;
   const MIN_FEED_CARD_WIDTH = 300;
 
