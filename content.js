@@ -181,17 +181,48 @@
     }
   }
 
+  function isInsideCommentSection(el) {
+    let node = el.parentElement;
+    while (node) {
+      if (node.classList && (
+        [...node.classList].some(c => /comment/i.test(c)) ||
+        node.getAttribute("data-finite-scroll") !== null
+      )) return true;
+
+      const text = node.innerText || "";
+      const buttons = node.querySelectorAll("button");
+      for (const btn of buttons) {
+        const label = (btn.textContent || "").trim().toLowerCase();
+        if (label === "reply" || label === "répondre" || label === "antworten" || label === "responder") {
+          return true;
+        }
+      }
+      node = node.parentElement;
+      if (node && node.tagName === "MAIN") break;
+    }
+    return false;
+  }
+
   function isLikelyCommentOrMetaText(el, text) {
     const lower = text.toLowerCase();
 
     if (el.closest("aside, nav, header, footer")) return true;
     if (el.closest("[contenteditable='true']")) return true;
     if (el.closest("form")) return true;
-
-    if (el.closest(".comments-comments-list, .comments-comment-item")) return true;
-    if (el.closest(".feed-shared-update-v2__comments-container")) return true;
     if (el.closest(".artdeco-modal, .artdeco-dropdown__content")) return true;
-    if (el.closest(".pv-top-card, .profile-creator-shared-feed-update__supplementary")) return true;
+
+    if (isInsideCommentSection(el)) return true;
+
+    const elRect = el.getBoundingClientRect();
+    const container = findCardContainer(el);
+    const containerRect = container.getBoundingClientRect();
+    if (containerRect.height > 0) {
+      const relTop = (elRect.top - containerRect.top) / containerRect.height;
+      if (relTop < 0.05) {
+        const hasProfileImg = container.querySelector("img[class*='avatar'], img[class*='profile'], img[alt*='photo']");
+        if (hasProfileImg && text.length < 300) return true;
+      }
+    }
 
     if (text.length < 200) {
       if (
