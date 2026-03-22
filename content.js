@@ -188,9 +188,14 @@
     if (el.closest("[contenteditable='true']")) return true;
     if (el.closest("form")) return true;
 
+    if (el.closest(".comments-comments-list, .comments-comment-item")) return true;
+    if (el.closest(".feed-shared-update-v2__comments-container")) return true;
+    if (el.closest(".artdeco-modal, .artdeco-dropdown__content")) return true;
+    if (el.closest(".pv-top-card, .profile-creator-shared-feed-update__supplementary")) return true;
+
     if (text.length < 200) {
       if (
-        /\b(see all comments|add a comment|reply|replies|respond|response)\b/.test(
+        /\b(see all comments|add a comment|reply|replies|respond|response|view profile|connect|follow|message)\b/.test(
           lower
         )
       ) {
@@ -202,6 +207,16 @@
       return true;
     }
 
+    return false;
+  }
+
+  function looksLikeFeedPost(container) {
+    if (container.hasAttribute("data-urn")) return true;
+    if (container.querySelector("a[href*='/feed/update/']")) return true;
+    if (container.querySelector("a[href*='/posts/']")) return true;
+    if (container.querySelector("button[aria-label*='Like'], button[aria-label*='Comment'], button[aria-label*='Repost']")) return true;
+    if (container.querySelector(".feed-shared-update-v2__description-wrapper")) return true;
+    if (container.querySelector(".social-details-social-counts")) return true;
     return false;
   }
 
@@ -240,6 +255,11 @@
       if (!isLikelyFeedColumnCard(container)) {
         const r = container.getBoundingClientRect();
         LOG("REJECT card size:", Math.round(r.width) + "x" + Math.round(r.height), preview);
+        continue;
+      }
+
+      if (!looksLikeFeedPost(container)) {
+        LOG("REJECT not a feed post:", preview);
         continue;
       }
       const containerRect = container.getBoundingClientRect();
