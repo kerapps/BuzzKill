@@ -677,7 +677,20 @@
   function createWrapper(postEl, textEl) {
     const wrapper = document.createElement("div");
     wrapper.className = "linkedout-wrapper";
-    textEl.parentNode.insertBefore(wrapper, textEl.nextSibling);
+
+    let insertTarget = textEl;
+    let parent = textEl.parentElement;
+    while (parent && parent !== postEl) {
+      const style = window.getComputedStyle(parent);
+      const display = style.display;
+      if (display === "flex" || display === "inline-flex" || display === "grid") {
+        insertTarget = parent;
+        break;
+      }
+      parent = parent.parentElement;
+    }
+
+    insertTarget.parentNode.insertBefore(wrapper, insertTarget.nextSibling);
     return wrapper;
   }
 

@@ -168,6 +168,10 @@
 
 .linkedout-wrapper {
   position: relative;
+  clear: both;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 /* Dark mode support — LinkedIn uses .theme--dark on <body> or html */
