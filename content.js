@@ -216,11 +216,7 @@
     if (container.querySelector("a[href*='/feed/update/']")) return true;
     if (container.querySelector("a[href*='/posts/']")) return true;
     if (container.querySelector("[class*='social-actions'], [class*='social-details'], [class*='feed-shared']")) return true;
-    const buttons = container.querySelectorAll("button");
-    if (buttons.length >= 3) {
-      const bar = container.querySelector("[class*='social-action'], [role='group']");
-      if (bar) return true;
-    }
+    if (container.querySelectorAll("button").length >= 3) return true;
     return false;
   }
 
