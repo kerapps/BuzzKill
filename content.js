@@ -679,15 +679,13 @@
     wrapper.className = "linkedout-wrapper";
 
     let insertTarget = textEl;
-    let parent = textEl.parentElement;
-    while (parent && parent !== postEl) {
-      const style = window.getComputedStyle(parent);
+    const directParent = textEl.parentElement;
+    if (directParent && directParent !== postEl) {
+      const style = window.getComputedStyle(directParent);
       const display = style.display;
       if (display === "flex" || display === "inline-flex" || display === "grid") {
-        insertTarget = parent;
-        break;
+        insertTarget = directParent;
       }
-      parent = parent.parentElement;
     }
 
     insertTarget.parentNode.insertBefore(wrapper, insertTarget.nextSibling);
